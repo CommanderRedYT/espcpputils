@@ -11,21 +11,21 @@ namespace espcpputils {
 class mqtt_client
 {
 public:
-    mqtt_client() : handle{NULL} {}
+    mqtt_client() : handle{nullptr} {}
 
-    mqtt_client(const esp_mqtt_client_config_t *config) : handle{esp_mqtt_client_init(config)} {}
+    explicit mqtt_client(const esp_mqtt_client_config_t *config) : handle{esp_mqtt_client_init(config)} {}
 
     mqtt_client(const mqtt_client &) = delete;
 
-    mqtt_client(mqtt_client &&other) : handle{std::move(other.handle)} { other.handle = NULL; }
+    mqtt_client(mqtt_client &&other) noexcept : handle{other.handle} { other.handle = nullptr; }
 
     mqtt_client &operator=(const mqtt_client &) = delete;
 
-    mqtt_client &operator=(mqtt_client &&other) { if (handle) esp_mqtt_client_destroy(handle); handle = std::move(other.handle); other.handle = NULL; return *this; }
+    mqtt_client &operator=(mqtt_client &&other) noexcept { if (handle) esp_mqtt_client_destroy(handle); handle = other.handle; other.handle = nullptr; return *this; }
 
     ~mqtt_client() { if (handle) esp_mqtt_client_destroy(handle); }
 
-    operator bool() const { return handle != NULL; }
+    explicit operator bool() const { return handle != nullptr; }
 
     //esp_err_t set_uri        (const char *uri)                                                                       { return esp_mqtt_client_set_uri        (handle, uri);                                      }
     esp_err_t set_uri        (std::string_view uri)                                                                  { return esp_mqtt_client_set_uri        (handle, uri.data());                               }
