@@ -34,10 +34,8 @@ set(dependencies
     esp_hw_support
     esp_websocket_client
     tcp_transport
-
     cpputils
     espchrono
-    fmt
 )
 
 idf_component_register(
