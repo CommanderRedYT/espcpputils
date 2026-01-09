@@ -21,6 +21,7 @@ public:
     const espchrono::millis_clock::duration&lastElapsed() const { return m_lastElapsed; }
     const espchrono::millis_clock::duration&averageElapsed() const { return m_averageElapsed; }
     const espchrono::millis_clock::duration&maxElapsed() const { return m_maxElapsed; }
+    const espchrono::millis_clock::duration&totalElapsed() const { return m_totalElapsed; }
     int callCount() const { return m_callCount; }
 
     void setup() const { m_setupCallback(); }

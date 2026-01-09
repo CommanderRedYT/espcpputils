@@ -14,8 +14,8 @@ namespace {
 constexpr const char * const TAG = "ESPCPPUTILS";
 } // namespace
 
-SchedulerTask::SchedulerTask(const char *name, void (&setupCallback)(), void (&loopCallback)(), espchrono::millis_clock::duration loopInterval,
-                             bool intervalImportant, std::string (*perfInfo)()) :
+SchedulerTask::SchedulerTask(const char *name, void (&setupCallback)(), void (&loopCallback)(), const espchrono::millis_clock::duration loopInterval,
+                             const bool intervalImportant, std::string (*perfInfo)()) :
     m_name{name}, m_setupCallback{setupCallback}, m_loopCallback{loopCallback}, m_loopInterval{loopInterval},
     m_intervalImportant{intervalImportant}, m_perfInfo{perfInfo}
 {
@@ -57,12 +57,12 @@ trotzdem:
         ESP_LOGV(TAG, "task %s hang for %lldms (heap8=%zd)",
                  m_name, std::chrono::floor<std::chrono::milliseconds>(m_lastElapsed).count(), heap_caps_get_free_size(MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT));
     else
-        ESP_LOGW(TAG, "task %s hang for %lldms (heap8=%zd) %s",
+        ESP_LOGW(TAG, "task %s hang for %lldms (heap8=%zd) %s (running on %lldms interval)",
                  m_name, std::chrono::floor<std::chrono::milliseconds>(m_lastElapsed).count(), heap_caps_get_free_size(MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT),
-                 m_perfInfo ? m_perfInfo().c_str() : "");
+                 m_perfInfo ? m_perfInfo().c_str() : "", m_loopInterval / 1ms);
 }
 
-void SchedulerTask::pushStats(bool printTask)
+void SchedulerTask::pushStats(const bool printTask)
 {
     m_callCount = m_callCountTemp;
     m_totalElapsed = m_totalElapsedTemp;
@@ -74,11 +74,12 @@ void SchedulerTask::pushStats(bool printTask)
     m_maxElapsedTemp = {};
 
     if (printTask)
-        ESP_LOGI(TAG, "name=%s, count=%i, last=%lldms, total=%lldms, max=%lldms",
+        ESP_LOGI(TAG, "name=%s, count=%i, last=%lldms, total=%lldms, max=%lldms, avg=%lldms",
                  m_name, m_callCount,
                  std::chrono::floor<std::chrono::milliseconds>(m_lastElapsed).count(),
                  std::chrono::floor<std::chrono::milliseconds>(m_totalElapsed).count(),
-                 std::chrono::floor<std::chrono::milliseconds>(m_maxElapsed).count()
+                 std::chrono::floor<std::chrono::milliseconds>(m_maxElapsed).count(),
+                 std::chrono::floor<std::chrono::milliseconds>(m_averageElapsed).count()
         );
 }
 
