@@ -60,7 +60,7 @@ public:
         case WS_TRANSPORT_OPCODES_PING:   return "PING";
         case WS_TRANSPORT_OPCODES_PONG:   return "PONG";
         case WS_TRANSPORT_OPCODES_FIN:    return "FIN";
-        default: return fmt::format("unknown opcode({})", std::to_underlying(op_code));
+        default: return std::format("unknown opcode({})", std::to_underlying(op_code));
         }
     }
 
