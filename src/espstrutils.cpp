@@ -1,6 +1,7 @@
 #include "espstrutils.h"
 
 #include "sdkconfig.h"
+#undef LOG_LOCAL_LEVEL
 #define LOG_LOCAL_LEVEL CONFIG_ESPCPPUTILS_LOG_LOCAL_LEVEL
 
 // system includes
